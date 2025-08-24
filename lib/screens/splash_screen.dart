@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:sheger_ride/views/home_view.dart';
+import 'package:sheger_ride/views/login_view.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen>
     Timer(const Duration(milliseconds: 100), () {
       setState(() {
         _opacity = 0.8;
-        _scale = 1.4; 
+        _scale = 1.4;
       });
 
       Future.delayed(const Duration(milliseconds: 1500), () {
@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen>
       Navigator.pushReplacement(
         // ignore: use_build_context_synchronously
         context,
-        MaterialPageRoute(builder: (context) => const HomeView()),
+        MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     });
   }
@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen>
           child: AnimatedScale(
             scale: _scale,
             duration: const Duration(seconds: 2),
-            curve: Curves.easeOutBack, 
+            curve: Curves.easeOutBack,
             child: Image.asset(
               'assets/images/sheger_logo.png',
               width: 220,
