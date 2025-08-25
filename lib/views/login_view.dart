@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sheger_ride/views/home_view.dart';
+import 'package:sheger_ride/views/dashboard_view.dart';
 import 'package:sheger_ride/views/signup_view.dart';
 
 class LoginPage extends StatefulWidget {
@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
     if (_formKey.currentState!.validate()) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeView()),
+        MaterialPageRoute(builder: (context) => const DashboardPage()),
       );
     }
   }
