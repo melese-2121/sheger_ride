@@ -5,15 +5,11 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Sheger Ride - Home"),
-        backgroundColor: Colors.deepPurple,
-      ),
-      body: const Center(
+    return const Scaffold(
+      body: Center(
         child: Text(
-          "Welcome to Sheger Ride 🚖",
-          style: TextStyle(fontSize: 20),
+          "Home Page",
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
       ),
     );
