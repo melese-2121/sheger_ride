@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sheger_ride/controllers/auth_controller.dart';
 import 'package:sheger_ride/views/dashboard_view.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  ConsumerState<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends ConsumerState<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -17,13 +19,16 @@ class _SignUpPageState extends State<SignUpPage> {
       TextEditingController();
   bool _obscurePassword = true;
 
-  void _signup() {
-    if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const DashboardPage()),
-      );
-    }
+  void _signup() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final authController = ref.read(authControllerProvider.notifier);
+
+    await authController.signUp(
+      _emailController.text,
+      _passwordController.text,
+      _nameController.text,
+    );
   }
 
   @override
@@ -147,26 +152,106 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                           const SizedBox(height: 24),
 
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _signup,
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
+                          Consumer(
+                            builder: (context, ref, _) {
+                              final authState = ref.watch(
+                                authControllerProvider,
+                              );
+
+                              return authState.when(
+                                data: (user) {
+                                  if (user != null) {
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                          if (mounted) {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const DashboardPage(),
+                                              ),
+                                            );
+                                          }
+                                        });
+                                  }
+
+                                  return SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 16,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
+                                        ),
+                                        backgroundColor: Colors.tealAccent[400],
+                                        foregroundColor: Colors.black,
+                                        elevation: 5,
+                                        shadowColor: Colors.tealAccent[200],
+                                        textStyle: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      onPressed: authState.isLoading
+                                          ? null
+                                          : _signup,
+                                      child: authState.isLoading
+                                          ? const SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: CircularProgressIndicator(
+                                                color: Colors.black,
+                                                strokeWidth: 2,
+                                              ),
+                                            )
+                                          : const Text("Sign Up"),
+                                    ),
+                                  );
+                                },
+                                loading: () => const Center(
+                                  child: CircularProgressIndicator(),
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
+                                error: (e, _) => Column(
+                                  children: [
+                                    Text(
+                                      e.toString(),
+                                      style: const TextStyle(color: Colors.red),
+                                    ),
+                                    SizedBox(
+                                      width: double.infinity,
+
+                                      child: ElevatedButton(
+                                        onPressed: () => _signup(),
+                                        child: const Text("Sign Up"),
+                                        style: ElevatedButton.styleFrom(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                          ),
+                                          backgroundColor:
+                                              Colors.tealAccent[400],
+                                          foregroundColor: Colors.black,
+                                          elevation: 5,
+                                          shadowColor: Colors.tealAccent[200],
+                                          textStyle: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                backgroundColor: Colors.tealAccent[400],
-                                foregroundColor: Colors.black,
-                                textStyle: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              child: const Text("Sign Up"),
-                            ),
+                              );
+                            },
                           ),
                         ],
                       ),
