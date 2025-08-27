@@ -1,6 +1,11 @@
 # 🚍 Sheger Ride
 
-**Your smart city transportation companion!** Track buses, trains, and taxis in real-time, plan optimal routes, and never miss a ride again. Built with Flutter, Sheger Ride makes city commuting fast, reliable, and intelligent.  
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev/)
+[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+**Sheger Ride** – Your smart city transportation companion!  
+Track buses, trains, and taxis in real-time, plan optimal routes, and never miss a ride. Built with Flutter, Sheger Ride is fast, reliable, and intelligent.  
 
 ---
 
@@ -98,7 +103,7 @@ Sheger Ride empowers urban commuters to:
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/sheger_ride.git
+git clone https://github.com/melese-2121/sheger_ride.git
 
 # Navigate to the project folder
 cd sheger_ride
