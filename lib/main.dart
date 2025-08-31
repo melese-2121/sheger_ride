@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sheger_ride/screens/splash_screen.dart';
+import 'package:sheger_ride/core/theme/theme.dart'; // Add this import
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +42,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Sheger Ride',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: lightTheme, // Use the light theme
+      darkTheme: darkTheme, // Use the dark theme
+      themeMode: ThemeMode.system, // Support system theme
       home: const SplashScreen(),
     );
   }
