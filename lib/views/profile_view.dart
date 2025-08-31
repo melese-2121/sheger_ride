@@ -5,55 +5,47 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: colorScheme.background,
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              // Top Profile Header with Gradient + Fade Animation
+              // Top Profile Header with Theme
               AnimatedContainer(
                 duration: const Duration(milliseconds: 600),
                 curve: Curves.easeOut,
                 height: 260,
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF4A00E0), Color(0xFF8E2DE2)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: colorScheme.primary,
+                  borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(40),
                     bottomRight: Radius.circular(40),
                   ),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundColor: Colors.white,
+                      backgroundColor: colorScheme.surface,
                       child: Icon(Icons.person,
-                          size: 60, color: Colors.deepPurple),
+                          size: 60, color: colorScheme.primary),
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     Text(
                       "John Doe",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                      style: textTheme.headlineMedium?.copyWith(color: colorScheme.onPrimary),
                     ),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     Text(
                       "johndoe@example.com",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
-                      ),
+                      style: textTheme.bodySmall?.copyWith(color: colorScheme.onPrimary.withOpacity(0.7)),
                     ),
                   ],
                 ),
@@ -72,30 +64,34 @@ class ProfileView extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
                     _buildActionCard(
+                      context: context,
                       icon: Icons.edit,
                       title: "Edit Profile",
-                      color: Colors.deepPurple,
+                      color: colorScheme.primary,
                       delay: 200,
                       onTap: () {},
                     ),
                     _buildActionCard(
+                      context: context,
                       icon: Icons.history,
                       title: "Ride History",
-                      color: Colors.indigo,
+                      color: colorScheme.secondary,
                       delay: 400,
                       onTap: () {},
                     ),
                     _buildActionCard(
+                      context: context,
                       icon: Icons.settings,
                       title: "Settings",
-                      color: Colors.blue,
+                      color: colorScheme.tertiary,
                       delay: 600,
                       onTap: () {},
                     ),
                     _buildActionCard(
+                      context: context,
                       icon: Icons.logout,
                       title: "Logout",
-                      color: Colors.red,
+                      color: colorScheme.error,
                       delay: 800,
                       onTap: () {},
                     ),
@@ -113,7 +109,7 @@ class ProfileView extends StatelessWidget {
                   margin: const EdgeInsets.all(20),
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: colorScheme.surface,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
@@ -141,12 +137,14 @@ class ProfileView extends StatelessWidget {
   }
 
   Widget _buildActionCard({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required Color color,
     required int delay,
     required VoidCallback onTap,
   }) {
+    final textTheme = Theme.of(context).textTheme;
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0, end: 1),
       duration: Duration(milliseconds: delay + 600),
@@ -164,7 +162,7 @@ class ProfileView extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
@@ -185,10 +183,7 @@ class ProfileView extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
               )
             ],
           ),
@@ -205,23 +200,18 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+          style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
         ),
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.grey,
-          ),
+          style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurface.withOpacity(0.6)),
         ),
       ],
     );
