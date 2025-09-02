@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sheger_ride/controllers/auth_controller.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:sheger_ride/controllers/auth_providers.dart';
 import 'package:sheger_ride/views/dashboard_view.dart';
 
 class SignUpPage extends ConsumerStatefulWidget {
@@ -18,6 +19,8 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   bool _obscurePassword = true;
+  String? fullPhoneNumber;
+  String? countryCode;
 
   void _signup() async {
     if (!_formKey.currentState!.validate()) return;
@@ -25,9 +28,11 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     final authController = ref.read(authControllerProvider.notifier);
 
     await authController.signUp(
-      _emailController.text,
-      _passwordController.text,
-      _nameController.text,
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+      fullName: _nameController.text.trim(),
+      phone: fullPhoneNumber ?? '',
+      countryCode: countryCode ?? '+251',
     );
   }
 
@@ -99,14 +104,48 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                             hint: 'Email',
                             icon: Icons.email,
                             validator: (v) {
-                              if (v == null || v.isEmpty)
+                              if (v == null || v.isEmpty) {
                                 return "Enter your email";
+                              }
                               final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                              if (!regex.hasMatch(v))
+                              if (!regex.hasMatch(v)) {
                                 return "Enter a valid email";
+                              }
                               return null;
                             },
                           ),
+                          const SizedBox(height: 16),
+                          IntlPhoneField(
+                            decoration: InputDecoration(
+                              hintText: 'Phone Number',
+                              prefixIcon: const Icon(
+                                Icons.phone,
+                                color: Colors.white70,
+                              ),
+                              hintStyle: const TextStyle(color: Colors.white54),
+                              filled: true,
+                              fillColor: Colors.white.withOpacity(0.05),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 16,
+                                horizontal: 16,
+                              ),
+                            ),
+                            initialCountryCode: 'ET',
+                            style: const TextStyle(color: Colors.white),
+                            dropdownIcon: const Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.white70,
+                            ),
+                            onChanged: (phone) {
+                              fullPhoneNumber = phone.completeNumber;
+                              countryCode = phone.countryCode;
+                            },
+                          ),
+
                           const SizedBox(height: 16),
 
                           _buildTextField(
@@ -128,10 +167,12 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                               },
                             ),
                             validator: (v) {
-                              if (v == null || v.isEmpty)
+                              if (v == null || v.isEmpty) {
                                 return "Enter a password";
-                              if (v.length < 6)
+                              }
+                              if (v.length < 6) {
                                 return "Password must be at least 6 characters";
+                              }
                               return null;
                             },
                           ),
@@ -143,10 +184,12 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                             icon: Icons.lock_outline,
                             obscureText: true,
                             validator: (v) {
-                              if (v == null || v.isEmpty)
+                              if (v == null || v.isEmpty) {
                                 return "Confirm your password";
-                              if (v != _passwordController.text)
+                              }
+                              if (v != _passwordController.text) {
                                 return "Passwords do not match";
+                              }
                               return null;
                             },
                           ),
@@ -226,7 +269,6 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
                                       child: ElevatedButton(
                                         onPressed: () => _signup(),
-                                        child: const Text("Sign Up"),
                                         style: ElevatedButton.styleFrom(
                                           padding: const EdgeInsets.symmetric(
                                             vertical: 16,
@@ -246,6 +288,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
+                                        child: const Text("Sign Up"),
                                       ),
                                     ),
                                   ],

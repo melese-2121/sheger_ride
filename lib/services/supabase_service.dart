@@ -8,22 +8,38 @@ class SupabaseService {
     required String email,
     required String password,
     required String fullName,
+    required String phone,
+    required String countryCode,
+    String role = 'user',
   }) async {
     try {
-      final user = await client.auth.signUp(
+      final response = await client.auth.signUp(
         email: email,
         password: password,
-        // 'data' is the correct parameter to send extra user info
-        data: {'full_name': fullName},
+        data: {
+          'full_name': fullName,
+        },
       );
 
-      if (user.user == null) {
+      final user = response.user;
+      if (user == null) {
         throw Exception('Signup failed. No user returned.');
       }
 
-      return user.user!;
+      // Insert extra info into your custom `users` table
+      await client.from('users').insert({
+        'user_id': user.id,
+        'full_name': fullName,
+        'email': email,
+        'phone': phone,
+        'country_code': countryCode,
+        'password_hash': password, // ⚠️ consider hashing!
+        'role': role,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+
+      return user;
     } on AuthException catch (e) {
-      // Supabase auth errors
       throw Exception(e.message);
     } catch (e) {
       throw Exception('Signup failed: $e');
