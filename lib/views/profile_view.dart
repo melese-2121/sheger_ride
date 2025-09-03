@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sheger_ride/views/profile/edit_profile_view.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -69,7 +70,14 @@ class ProfileView extends StatelessWidget {
                       title: "Edit Profile",
                       color: colorScheme.primary,
                       delay: 200,
-                      onTap: () {},
+                        onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const EditProfileView(),
+                          ),
+                        );
+                      },
                     ),
                     _buildActionCard(
                       context: context,
