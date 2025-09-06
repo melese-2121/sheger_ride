@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sheger_ride/controllers/auth_providers.dart';
+import 'package:sheger_ride/views/login_view.dart';
 import 'package:sheger_ride/views/profile/edit_profile_view.dart';
 import 'package:sheger_ride/views/settings/settings_view.dart';
 
-class ProfileView extends StatelessWidget {
+class ProfileView extends ConsumerWidget {
   const ProfileView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
@@ -109,7 +112,16 @@ class ProfileView extends StatelessWidget {
                       title: "Logout",
                       color: colorScheme.error,
                       delay: 800,
-                      onTap: () {},
+                      onTap: () async {
+                        await ref.read(authControllerProvider.notifier).logout();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LoginPage(),
+                          ),
+                          (route) => false,
+                        );
+                      },
                     ),
                   ],
                 ),
