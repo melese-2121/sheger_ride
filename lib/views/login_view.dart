@@ -42,7 +42,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           }
         },
         error: (e, _) {
-          AppToast.showError(context, e.toString());
+          AppToast.showError(context, AppToast.cleanMessage(e));
         },
       );
     });

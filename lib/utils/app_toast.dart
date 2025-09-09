@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
 
 class AppToast {
+  
+  static String cleanMessage(Object error) {
+  final message = error.toString();
+  return message.replaceFirst(RegExp(r'^Exception:\s*'), '');
+}
+
   static void showError(BuildContext context, String message) {
     _showToast(
       
