@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sheger_ride/controllers/auth_providers.dart';
+import 'package:sheger_ride/utils/app_toast.dart';
 import 'package:sheger_ride/views/dashboard_view.dart';
 import 'package:sheger_ride/views/signup_view.dart';
 
@@ -41,9 +42,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           }
         },
         error: (e, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.toString())),
-          );
+          AppToast.showError(context, e.toString());
         },
       );
     });
