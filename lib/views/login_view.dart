@@ -4,6 +4,7 @@ import 'package:sheger_ride/controllers/auth_providers.dart';
 import 'package:sheger_ride/utils/app_toast.dart';
 import 'package:sheger_ride/views/dashboard_view.dart';
 import 'package:sheger_ride/views/signup_view.dart';
+import 'package:sheger_ride/widgets/app_button.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -133,30 +134,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 ),
                 const SizedBox(height: 20),
 
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: authState.isLoading ? null : _login,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      backgroundColor: Colors.tealAccent[400],
-                      foregroundColor: Colors.black,
-                    ),
-                    child: authState.isLoading
-                        ? const CircularProgressIndicator(
-                            color: Colors.black,
-                          )
-                        : const Text(
-                            "Login",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                  ),
+                AppButton(
+                  label: "Login",
+                  isLoading: authState.isLoading,
+                  onPressed: _login,
                 ),
 
                 const SizedBox(height: 20),
@@ -187,7 +168,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       prefixIcon: Icon(icon, color: Colors.white70),
       suffixIcon: suffix,
       filled: true,
-      fillColor: Colors.white.withOpacity(0.1),
+      fillColor: Colors.white.withValues(alpha: 0.1),
       hintText: hint,
       hintStyle: const TextStyle(color: Colors.white54),
       border: OutlineInputBorder(

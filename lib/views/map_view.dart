@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sheger_ride/widgets/app_button.dart';
 
 class MapView extends StatelessWidget {
   const MapView({super.key});
@@ -133,17 +134,16 @@ class MapView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+
+                      SizedBox(
+                        width: 120,
+                        height: 40,
+                        child: AppButton(
+                          label: "Confirm",
+                          onPressed: () {},
                         ),
-                        child: const Text("Confirm"),
                       ),
+
                     ],
                   ),
                 ],
