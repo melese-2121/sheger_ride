@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:sheger_ride/controllers/auth_providers.dart';
 import 'package:sheger_ride/views/dashboard_view.dart';
+import 'package:sheger_ride/widgets/app_button.dart';
 
 class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
@@ -218,41 +219,12 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                                         });
                                   }
 
-                                  return SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 16,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            14,
-                                          ),
-                                        ),
-                                        backgroundColor: Colors.tealAccent[400],
-                                        foregroundColor: Colors.black,
-                                        elevation: 5,
-                                        shadowColor: Colors.tealAccent[200],
-                                        textStyle: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      onPressed: authState.isLoading
-                                          ? null
-                                          : _signup,
-                                      child: authState.isLoading
-                                          ? const SizedBox(
-                                              width: 20,
-                                              height: 20,
-                                              child: CircularProgressIndicator(
-                                                color: Colors.black,
-                                                strokeWidth: 2,
-                                              ),
-                                            )
-                                          : const Text("Sign Up"),
-                                    ),
+                                  return AppButton(
+                                    label: "Sign Up",
+                                    isLoading: authState.isLoading,
+                                    onPressed: authState.isLoading
+                                        ? () {}
+                                        : _signup,
                                   );
                                 },
                                 loading: () => const Center(
