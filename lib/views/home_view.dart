@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sheger_ride/views/notifications/notification_list_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -19,7 +20,12 @@ class HomeView extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const NotificationListView()),
+              );
+            },
             icon: const Icon(Icons.notifications, color: Colors.white),
           ),
         ],
