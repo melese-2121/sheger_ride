@@ -1,133 +1,220 @@
 import 'package:flutter/material.dart';
 
-class NotificationListView extends StatelessWidget {
+class NotificationListView extends StatefulWidget {
   const NotificationListView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+  State<NotificationListView> createState() => _NotificationListViewState();
+}
 
-    final notifications = [
-      {
-        "title": "Ride Completed",
-        "message": "Your ride from Bole to Piassa has been completed successfully.",
-        "time": "2h ago",
-        "icon": Icons.check_circle,
-        "color": Colors.green
-      },
-      {
-        "title": "Payment Received",
-        "message": "150 ETB has been charged to your wallet.",
-        "time": "Yesterday",
-        "icon": Icons.account_balance_wallet,
-        "color": Colors.blue
-      },
-      {
-        "title": "Promo Alert",
-        "message": "Get 20% off on your next ride. Valid until Sep 30!",
-        "time": "2 days ago",
-        "icon": Icons.local_offer,
-        "color": Colors.orange
-      },
-      {
-        "title": "Driver Assigned",
-        "message": "Your driver Abebe is on the way to pick you up.",
-        "time": "Sep 10",
-        "icon": Icons.directions_car,
-        "color": Colors.purple
-      },
-    ];
+class _NotificationListViewState extends State<NotificationListView> {
+  List<Map<String, dynamic>> notifications = [
+    {
+      "id": 1,
+      "title": "New Ride Request",
+      "body": "Someone requested a ride near you.",
+      "time": "2m ago",
+      "read": false
+    },
+    {
+      "id": 2,
+      "title": "Promo Offer 🎉",
+      "body": "50% discount on your next ride! Limited time.",
+      "time": "1h ago",
+      "read": false
+    },
+    {
+      "id": 3,
+      "title": "Profile Updated",
+      "body": "Your profile was updated successfully.",
+      "time": "Yesterday",
+      "read": true
+    },
+  ];
+
+  void _markAllAsRead() {
+    setState(() {
+      for (var n in notifications) {
+        n["read"] = true;
+      }
+    });
+  }
+
+  void _clearAll() {
+    setState(() {
+      notifications.clear();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: Column(
         children: [
-          // Gradient Header
           Container(
             height: 160,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [colorScheme.primary, colorScheme.secondary],
+                colors: [theme.colorScheme.primary, theme.colorScheme.secondary],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(40),
-                bottomRight: Radius.circular(40),
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
               ),
             ),
-            child: Center(
-              child: Text(
-                "Notifications",
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Notifications",
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
+                    PopupMenuButton<String>(
+                      color: Colors.white,
+                      onSelected: (value) {
+                        if (value == "mark_read") _markAllAsRead();
+                        if (value == "clear_all") _clearAll();
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: "mark_read",
+                          child: Text("Mark all as read"),
+                        ),
+                        const PopupMenuItem(
+                          value: "clear_all",
+                          child: Text("Clear all"),
+                        ),
+                      ],
+                      icon: const Icon(Icons.more_vert, color: Colors.white),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-
-          const SizedBox(height: 12),
-
-          // Notification List
           Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.all(20),
-              itemCount: notifications.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
-              itemBuilder: (context, index) {
-                final n = notifications[index];
-                return Container(
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.06),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      )
-                    ],
-                  ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                    leading: CircleAvatar(
-                      radius: 26,
-                      backgroundColor:
-                          (n["color"] as Color).withOpacity(0.15),
-                      child: Icon(
-                        n["icon"] as IconData,
-                        size: 28,
-                        color: n["color"] as Color,
-                      ),
+            child: notifications.isEmpty
+                ? Center(
+                    child: Text(
+                      "No notifications",
+                      style: theme.textTheme.bodyMedium,
                     ),
-                    title: Text(
-                      n["title"].toString(),
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 4),
-                        Text(
-                          n["message"].toString(),
-                          style: TextStyle(
-                              color: Colors.grey.shade700, fontSize: 14),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: notifications.length,
+                    itemBuilder: (context, index) {
+                      final n = notifications[index];
+                      return Dismissible(
+                        key: Key(n["id"].toString()),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (_) {
+                          setState(() {
+                            notifications.removeAt(index);
+                          });
+                        },
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: const Icon(Icons.delete, color: Colors.white),
                         ),
-                        const SizedBox(height: 6),
-                        Text(
-                          n["time"].toString(),
-                          style: TextStyle(
-                              color: Colors.grey.shade500, fontSize: 12),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: n["read"]
+                                ? Colors.white
+                                : theme.colorScheme.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                radius: 24,
+                                backgroundColor: n["read"]
+                                    ? Colors.grey[300]
+                                    : theme.colorScheme.primary,
+                                child: Icon(
+                                  n["read"]
+                                      ? Icons.notifications_none
+                                      : Icons.notifications_active,
+                                  color: n["read"] ? Colors.grey[700] : Colors.white,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          n["title"],
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: n["read"]
+                                                ? FontWeight.w500
+                                                : FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          n["time"],
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      n["body"],
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[700],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (!n["read"])
+                                IconButton(
+                                  icon: const Icon(Icons.check_circle, color: Colors.green),
+                                  onPressed: () {
+                                    setState(() {
+                                      n["read"] = true;
+                                    });
+                                  },
+                                ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                    onTap: () {},
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),
