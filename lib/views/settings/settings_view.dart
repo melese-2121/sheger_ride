@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class SettingsView extends StatefulWidget {
@@ -7,9 +8,21 @@ class SettingsView extends StatefulWidget {
   State<SettingsView> createState() => _SettingsViewState();
 }
 
-class _SettingsViewState extends State<SettingsView> {
+class _SettingsViewState extends State<SettingsView>
+    with SingleTickerProviderStateMixin {
   bool _darkMode = false;
   bool _notifications = true;
+
+  String _selectedLanguage = "English";
+  bool _showLanguages = false;
+
+  final List<Map<String, String>> _languages = [
+    {"name": "English", "flag": "🇺🇸"},
+    {"name": "Amharic", "flag": "🇪🇹"},
+    {"name": "French", "flag": "🇫🇷"},
+    {"name": "Spanish", "flag": "🇪🇸"},
+    {"name": "Arabic", "flag": "🇸🇦"},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +30,10 @@ class _SettingsViewState extends State<SettingsView> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       body: Column(
         children: [
+          // Header
           Container(
             height: 200,
             decoration: BoxDecoration(
@@ -65,6 +80,7 @@ class _SettingsViewState extends State<SettingsView> {
             ),
           ),
 
+          // Settings List
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(20),
@@ -85,17 +101,15 @@ class _SettingsViewState extends State<SettingsView> {
                   color: Colors.orange,
                 ),
                 const SizedBox(height: 12),
+
+                // Language Selector
+                _buildLanguageSelector(),
+
+                const SizedBox(height: 12),
                 _buildActionTile(
                   title: "Privacy & Security",
                   icon: Icons.lock,
                   color: Colors.green,
-                  onTap: () {},
-                ),
-                const SizedBox(height: 12),
-                _buildActionTile(
-                  title: "Language",
-                  icon: Icons.language,
-                  color: Colors.blue,
                   onTap: () {},
                 ),
                 const SizedBox(height: 12),
@@ -113,6 +127,7 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
+  // Switch Tile
   Widget _buildSwitchTile({
     required String title,
     required bool value,
@@ -145,6 +160,7 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
+  // Action Tile
   Widget _buildActionTile({
     required String title,
     required IconData icon,
@@ -175,10 +191,125 @@ class _SettingsViewState extends State<SettingsView> {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+              child: Text(title,
+                  style: const TextStyle(fontWeight: FontWeight.w600)),
             ),
             const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.grey),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Premium Language Selector
+  Widget _buildLanguageSelector() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.85),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              // Header row
+              InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () => setState(() => _showLanguages = !_showLanguages),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 22,
+                      backgroundColor: Colors.blue.withOpacity(0.15),
+                      child: const Icon(Icons.language, color: Colors.blue),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        "Language: $_selectedLanguage",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    AnimatedRotation(
+                      duration: const Duration(milliseconds: 250),
+                      turns: _showLanguages ? 0.5 : 0,
+                      child: const Icon(Icons.keyboard_arrow_down_rounded,
+                          size: 28, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Expandable list
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: _showLanguages
+                    ? Column(
+                        key: const ValueKey("langList"),
+                        children: _languages.map((lang) {
+                          final isActive = _selectedLanguage == lang["name"];
+                          return InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () {
+                              setState(() {
+                                _selectedLanguage = lang["name"]!;
+                                _showLanguages = false;
+                              });
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: isActive
+                                    ? Colors.blue.withOpacity(0.08)
+                                    : Colors.white,
+                                border: Border.all(
+                                  color: isActive
+                                      ? Colors.blue
+                                      : Colors.grey.withOpacity(0.3),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Text(lang["flag"] ?? "",
+                                      style: const TextStyle(fontSize: 20)),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(lang["name"]!,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 15)),
+                                  ),
+                                  if (isActive)
+                                    const Icon(Icons.check_circle,
+                                        color: Colors.blue, size: 20),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ],
+          ),
         ),
       ),
     );
