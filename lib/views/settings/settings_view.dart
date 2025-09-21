@@ -8,8 +8,7 @@ class SettingsView extends StatefulWidget {
   State<SettingsView> createState() => _SettingsViewState();
 }
 
-class _SettingsViewState extends State<SettingsView>
-    with SingleTickerProviderStateMixin {
+class _SettingsViewState extends State<SettingsView> {
   bool _darkMode = false;
   bool _notifications = true;
 
@@ -26,64 +25,67 @@ class _SettingsViewState extends State<SettingsView>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: Column(
         children: [
-          // Header
-          Container(
-            height: 200,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [colorScheme.primary, colorScheme.secondary],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(40),
-                bottomRight: Radius.circular(40),
-              ),
-            ),
-            child: Center(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 55,
-                    backgroundColor: colorScheme.surface,
-                    child: const CircleAvatar(
-                      radius: 50,
-                      backgroundImage:
-                          AssetImage("assets/profile_placeholder.png"),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 8,
-                    right: MediaQuery.of(context).size.width / 2 - 70,
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: colorScheme.surface,
-                        ),
-                        padding: const EdgeInsets.all(6),
-                        child: Icon(Icons.edit, color: colorScheme.primary),
+          // 🔥 Fixed Wavy Gradient Header
+          SizedBox(
+            height: 320,
+            child: Stack(
+              children: [
+                ClipPath(
+                  clipper: _WaveClipper(),
+                  child: Container(
+                    height: 320,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [colorScheme.primary, colorScheme.secondary],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
                     ),
-                  )
-                ],
-              ),
+                  ),
+                ),
+                Positioned.fill(
+                  top: 40,
+                  child: Column(
+                    children: [
+                      const CircleAvatar(
+                        radius: 45,
+                        backgroundImage:
+                            AssetImage("assets/profile_placeholder.png"),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        "Settings",
+                        style: textTheme.headlineSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Customize your experience",
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
 
-          // Settings List
+          // 🔽 Scrollable Content Below Header
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(20),
+              physics: const BouncingScrollPhysics(),
               children: [
                 _buildSwitchTile(
                   title: "Dark Mode",
@@ -102,10 +104,9 @@ class _SettingsViewState extends State<SettingsView>
                 ),
                 const SizedBox(height: 12),
 
-                // Language Selector
                 _buildLanguageSelector(),
-
                 const SizedBox(height: 12),
+
                 _buildActionTile(
                   title: "Privacy & Security",
                   icon: Icons.lock,
@@ -113,6 +114,7 @@ class _SettingsViewState extends State<SettingsView>
                   onTap: () {},
                 ),
                 const SizedBox(height: 12),
+
                 _buildActionTile(
                   title: "Help & Support",
                   icon: Icons.help,
@@ -137,11 +139,11 @@ class _SettingsViewState extends State<SettingsView>
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
+        color: Colors.white.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 4),
           )
@@ -150,7 +152,7 @@ class _SettingsViewState extends State<SettingsView>
       child: SwitchListTile(
         secondary: CircleAvatar(
           radius: 22,
-          backgroundColor: color.withOpacity(0.15),
+          backgroundColor: color.withValues(alpha: 0.15),
           child: Icon(icon, color: color),
         ),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
@@ -172,11 +174,11 @@ class _SettingsViewState extends State<SettingsView>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 4),
             )
@@ -186,7 +188,7 @@ class _SettingsViewState extends State<SettingsView>
           children: [
             CircleAvatar(
               radius: 22,
-              backgroundColor: color.withOpacity(0.15),
+              backgroundColor: color.withValues(alpha: 0.15),
               child: Icon(icon, color: color),
             ),
             const SizedBox(width: 16),
@@ -211,11 +213,11 @@ class _SettingsViewState extends State<SettingsView>
           duration: const Duration(milliseconds: 300),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.85),
+            color: Colors.white.withValues(alpha: 0.85),
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
+                color: Colors.black.withValues(alpha: 0.06),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -223,7 +225,6 @@ class _SettingsViewState extends State<SettingsView>
           ),
           child: Column(
             children: [
-              // Header row
               InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () => setState(() => _showLanguages = !_showLanguages),
@@ -231,7 +232,7 @@ class _SettingsViewState extends State<SettingsView>
                   children: [
                     CircleAvatar(
                       radius: 22,
-                      backgroundColor: Colors.blue.withOpacity(0.15),
+                      backgroundColor: Colors.blue.withValues(alpha: 0.15),
                       child: const Icon(Icons.language, color: Colors.blue),
                     ),
                     const SizedBox(width: 16),
@@ -253,8 +254,6 @@ class _SettingsViewState extends State<SettingsView>
                   ],
                 ),
               ),
-
-              // Expandable list
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: _showLanguages
@@ -277,12 +276,12 @@ class _SettingsViewState extends State<SettingsView>
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 color: isActive
-                                    ? Colors.blue.withOpacity(0.08)
+                                    ? Colors.blue.withValues(alpha: 0.08)
                                     : Colors.white,
                                 border: Border.all(
                                   color: isActive
                                       ? Colors.blue
-                                      : Colors.grey.withOpacity(0.3),
+                                      : Colors.grey.withValues(alpha: 0.3),
                                   width: 1,
                                 ),
                               ),
@@ -314,4 +313,30 @@ class _SettingsViewState extends State<SettingsView>
       ),
     );
   }
+}
+
+// 🌊 Wavy Clipper
+class _WaveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height - 50);
+
+    final firstControlPoint = Offset(size.width / 4, size.height);
+    final firstEndPoint = Offset(size.width / 2, size.height - 40);
+    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
+        firstEndPoint.dx, firstEndPoint.dy);
+
+    final secondControlPoint = Offset(size.width * 3 / 4, size.height - 80);
+    final secondEndPoint = Offset(size.width, size.height - 50);
+    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
+        secondEndPoint.dx, secondEndPoint.dy);
+
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

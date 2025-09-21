@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sheger_ride/controllers/auth_providers.dart';
@@ -13,157 +14,193 @@ class ProfileView extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+
     return Scaffold(
       backgroundColor: colorScheme.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              // Top Profile Header with Theme
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 600),
-                curve: Curves.easeOut,
-                height: 260,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: colorScheme.primary,
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(40),
-                    bottomRight: Radius.circular(40),
+      body: Column(
+        children: [
+          // 🔥 Fixed Wavy Header
+          SizedBox(
+            height: 320,
+            child: Stack(
+              children: [
+                ClipPath(
+                  clipper: _WaveClipper(),
+                  child: Container(
+                    height: 320,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          colorScheme.primary,
+                          colorScheme.secondary,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
                   ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundColor: colorScheme.surface,
-                      child: Icon(Icons.person,
-                          size: 60, color: colorScheme.primary),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      "John Doe",
-                      style: textTheme.headlineMedium?.copyWith(color: colorScheme.onPrimary),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      "johndoe@example.com",
-                      style: textTheme.bodySmall?.copyWith(color: colorScheme.onPrimary.withOpacity(0.7)),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 30),
-
-              // Quick Actions Grid with Animation
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    _buildActionCard(
-                      context: context,
-                      icon: Icons.edit,
-                      title: "Edit Profile",
-                      color: colorScheme.primary,
-                      delay: 200,
-                        onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const EditProfileView(),
+                Positioned.fill(
+                  top: 40,
+                  child: Column(
+                    children: [
+                      // Avatar with gradient ring
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.white,
+                              colorScheme.secondary.withValues(alpha: 0.6),
+                            ],
                           ),
-                        );
-                      },
-                    ),
-                    _buildActionCard(
-                      context: context,
-                      icon: Icons.history,
-                      title: "Ride History",
-                      color: colorScheme.secondary,
-                      delay: 400,
-                      onTap: () {},
-                    ),
-                    _buildActionCard(
-                      context: context,
-                      icon: Icons.settings,
-                      title: "Settings",
-                      color: colorScheme.tertiary,
-                      delay: 600,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const SettingsView(),
-                          ),
-                        );
-                      },
-                    ),
-                    _buildActionCard(
-                      context: context,
-                      icon: Icons.logout,
-                      title: "Logout",
-                      color: colorScheme.error,
-                      delay: 800,
-                      onTap: () async {
-                        await ref.read(authControllerProvider.notifier).logout();
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const LoginPage(),
-                          ),
-                          (route) => false,
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 30),
-
-              // Floating Stats Section with Fade In
-              AnimatedOpacity(
-                opacity: 1,
-                duration: const Duration(seconds: 1),
-                child: Container(
-                  margin: const EdgeInsets.all(20),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.25),
+                              blurRadius: 12,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
+                        ),
+                        child: const CircleAvatar(
+                          radius: 55,
+                          backgroundImage:
+                              AssetImage("assets/profile_placeholder.png"),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Text(
+                        "John Doe",
+                        style: textTheme.headlineSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        "johndoe@example.com",
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: Colors.white70,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                ),
+              ],
+            ),
+          ),
+
+          // Scrollable body under fixed header
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+
+                  // 🚀 Quick Actions Grid
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      shrinkWrap: true,
+                      mainAxisSpacing: 18,
+                      crossAxisSpacing: 18,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        _buildActionCard(
+                          context: context,
+                          icon: Icons.edit,
+                          title: "Edit Profile",
+                          color: colorScheme.primary,
+                          delay: 200,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const EditProfileView(),
+                              ),
+                            );
+                          },
+                        ),
+                        _buildActionCard(
+                          context: context,
+                          icon: Icons.history,
+                          title: "Ride History",
+                          color: colorScheme.secondary,
+                          delay: 400,
+                          onTap: () {},
+                        ),
+                        _buildActionCard(
+                          context: context,
+                          icon: Icons.settings,
+                          title: "Settings",
+                          color: colorScheme.tertiary,
+                          delay: 600,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const SettingsView(),
+                              ),
+                            );
+                          },
+                        ),
+                        _buildActionCard(
+                          context: context,
+                          icon: Icons.logout,
+                          title: "Logout",
+                          color: colorScheme.error,
+                          delay: 800,
+                          onTap: () async {
+                            await ref
+                                .read(authControllerProvider.notifier)
+                                .logout();
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const LoginPage(),
+                              ),
+                              (route) => false,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  // 📊 Stats Section
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: const [
-                      _StatItem(label: "Rides", value: "124"),
-                      _StatItem(label: "Distance", value: "342 km"),
-                      _StatItem(label: "Rating", value: "4.8"),
+                      _StatPill(
+                          icon: Icons.directions_car,
+                          label: "Rides",
+                          value: "124"),
+                      _StatPill(
+                          icon: Icons.map,
+                          label: "Distance",
+                          value: "342 km"),
+                      _StatPill(
+                          icon: Icons.star, label: "Rating", value: "4.8"),
                     ],
                   ),
-                ),
+
+                  const SizedBox(height: 40),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
+  // 🎨 Action Card (same as before)
   Widget _buildActionCard({
     required BuildContext context,
     required IconData icon,
@@ -180,40 +217,50 @@ class ProfileView extends ConsumerWidget {
       builder: (context, value, child) {
         return Opacity(
           opacity: value,
-          child: Transform.scale(
-            scale: value,
-            child: child,
-          ),
+          child: Transform.scale(scale: value, child: child),
         );
       },
       child: GestureDetector(
         onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.08),
-                blurRadius: 6,
-                offset: const Offset(0, 3),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.7),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.4),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 28,
-                backgroundColor: color.withOpacity(0.15),
-                child: Icon(icon, size: 28, color: color),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: color.withValues(alpha: 0.15),
+                    child: Icon(icon, size: 28, color: color),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    title,
+                    style: textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
-              )
-            ],
+            ),
           ),
         ),
       ),
@@ -221,27 +268,76 @@ class ProfileView extends ConsumerWidget {
   }
 }
 
-class _StatItem extends StatelessWidget {
+// 📊 Stat Pill
+class _StatPill extends StatelessWidget {
   final String label;
   final String value;
-  const _StatItem({required this.label, required this.value});
+  final IconData icon;
+  const _StatPill(
+      {required this.label, required this.value, required this.icon});
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
-    return Column(
-      children: [
-        Text(
-          value,
-          style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onSurface),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurface.withOpacity(0.6)),
-        ),
-      ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: colorScheme.primary, size: 20),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(value,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
+                      )),
+              Text(label,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurface.withValues(alpha: 0.7),
+                      )),
+            ],
+          ),
+        ],
+      ),
     );
   }
+}
+
+// 🌊 Wavy Clipper
+class _WaveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height - 60);
+
+    final firstControlPoint = Offset(size.width / 4, size.height);
+    final firstEndPoint = Offset(size.width / 2, size.height - 50);
+    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
+        firstEndPoint.dx, firstEndPoint.dy);
+
+    final secondControlPoint = Offset(size.width * 3 / 4, size.height - 100);
+    final secondEndPoint = Offset(size.width, size.height - 60);
+    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
+        secondEndPoint.dx, secondEndPoint.dy);
+
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
