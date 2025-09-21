@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sheger_ride/views/notifications/notification_list_view.dart';
+import 'package:sheger_ride/views/ride/ride_detail_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -77,8 +78,9 @@ class HomeView extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            _rideCard("Bole → 4 Kilo", "20 min • 120 ETB"),
-            _rideCard("Megenagna → Piassa", "15 min • 90 ETB"),
+            // Updated ride cards with navigation
+            _rideCard(context, "Bole → 4 Kilo", "20 min • 120 ETB"),
+            _rideCard(context, "Megenagna → Piassa", "15 min • 90 ETB"),
           ],
         ),
       ),
@@ -105,47 +107,57 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _rideCard(String route, String details) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0A2E36),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.teal.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(Icons.local_taxi, color: Colors.teal, size: 28),
+  Widget _rideCard(BuildContext context, String route, String details) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => RideDetailView(route: route, details: details),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  route,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0A2E36),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.teal.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.local_taxi, color: Colors.teal, size: 28),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    route,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  details,
-                  style: const TextStyle(color: Colors.white70, fontSize: 14),
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    details,
+                    style: const TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const Icon(Icons.arrow_forward_ios, color: Colors.white70, size: 16),
-        ],
+            const Icon(Icons.arrow_forward_ios, color: Colors.white70, size: 16),
+          ],
+        ),
       ),
     );
   }

@@ -52,12 +52,12 @@ class ProfileView extends ConsumerWidget {
                           gradient: LinearGradient(
                             colors: [
                               Colors.white,
-                              colorScheme.secondary.withValues(alpha: 0.6),
+                              colorScheme.secondary.withOpacity(0.6),
                             ],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.25),
+                              color: Colors.black.withOpacity(0.25),
                               blurRadius: 12,
                               offset: const Offset(0, 6),
                             ),
@@ -228,15 +228,15 @@ class ProfileView extends ConsumerWidget {
             filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.7),
+                color: Colors.white.withOpacity(0.7),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.4),
+                  color: Colors.white.withOpacity(0.4),
                   width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
+                    color: Colors.black.withOpacity(0.08),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -247,7 +247,7 @@ class ProfileView extends ConsumerWidget {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundColor: color.withValues(alpha: 0.15),
+                    backgroundColor: color.withOpacity(0.15),
                     child: Icon(icon, size: 28, color: color),
                   ),
                   const SizedBox(height: 12),
@@ -286,7 +286,7 @@ class _StatPill extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Colors.black.withOpacity(0.06),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -306,7 +306,7 @@ class _StatPill extends StatelessWidget {
                       )),
               Text(label,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurface.withValues(alpha: 0.7),
+                        color: colorScheme.onSurface.withOpacity(0.7),
                       )),
             ],
           ),
