@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sheger_ride/views/login_view.dart';
+import 'package:sheger_ride/views/dashboard_view.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -31,19 +33,29 @@ class _SplashScreenState extends State<SplashScreen>
       });
     });
 
-    Future.delayed(const Duration(milliseconds: 3500), () {
-      Navigator.pushReplacement(
+    Future.delayed(const Duration(milliseconds: 3500), () async {
+      final prefs = await SharedPreferences.getInstance();
+      final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
+      if (isLoggedIn) {
         // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
-      );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const DashboardPage()),
+        );
+      } else {
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF001922), 
+      backgroundColor: const Color(0xFF001922),
       body: Center(
         child: AnimatedOpacity(
           opacity: _opacity,
@@ -52,10 +64,7 @@ class _SplashScreenState extends State<SplashScreen>
             scale: _scale,
             duration: const Duration(seconds: 2),
             curve: Curves.easeOutBack,
-            child: Image.asset(
-              'assets/images/sheger_logo.png',
-              width: 220,
-            ),
+            child: Image.asset('assets/images/sheger_logo.png', width: 220),
           ),
         ),
       ),

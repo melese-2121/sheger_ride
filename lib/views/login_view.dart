@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sheger_ride/controllers/auth_providers.dart';
 import 'package:sheger_ride/utils/app_toast.dart';
 import 'package:sheger_ride/views/dashboard_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sheger_ride/views/signup_view.dart';
 import 'package:sheger_ride/widgets/app_button.dart';
 
@@ -21,7 +22,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   void _login() {
     if (_formKey.currentState!.validate()) {
-      ref.read(authControllerProvider.notifier).login(
+      ref
+          .read(authControllerProvider.notifier)
+          .login(
             email: _emailController.text.trim(),
             password: _passwordController.text.trim(),
           );
@@ -32,14 +35,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
 
-    ref.listen(authControllerProvider, (prev, next) {
+    ref.listen(authControllerProvider, (prev, next) async {
       next.whenOrNull(
-        data: (user) {
+        data: (user) async {
           if (user != null) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const DashboardPage()),
-            );
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setBool('is_logged_in', true);
+            if (context.mounted) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const DashboardPage()),
+              );
+            }
           }
         },
         error: (e, _) {
@@ -162,8 +169,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
-  InputDecoration _inputDecoration(String hint, IconData icon,
-      {Widget? suffix}) {
+  InputDecoration _inputDecoration(
+    String hint,
+    IconData icon, {
+    Widget? suffix,
+  }) {
     return InputDecoration(
       prefixIcon: Icon(icon, color: Colors.white70),
       suffixIcon: suffix,
