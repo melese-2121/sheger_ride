@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sheger_ride/views/login_view.dart';
 import 'package:sheger_ride/views/dashboard_view.dart';
+import 'package:sheger_ride/views/onboarding_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -35,8 +36,32 @@ class _SplashScreenState extends State<SplashScreen>
 
     Future.delayed(const Duration(milliseconds: 3500), () async {
       final prefs = await SharedPreferences.getInstance();
+      final isFirstLaunch = !(prefs.getBool('onboarding_complete') ?? false);
       final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
-      if (isLoggedIn) {
+      if (isFirstLaunch) {
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OnboardingPage(
+              onFinish: () async {
+                await prefs.setBool('onboarding_complete', true);
+                if (prefs.getBool('is_logged_in') ?? false) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const DashboardPage()),
+                  );
+                } else {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LoginPage()),
+                  );
+                }
+              },
+            ),
+          ),
+        );
+      } else if (isLoggedIn) {
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
