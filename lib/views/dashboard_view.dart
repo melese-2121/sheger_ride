@@ -33,26 +33,16 @@ class _DashboardPageState extends State<DashboardPage> {
           });
         },
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.tealAccent[400],
-        unselectedItemColor: Colors.grey,
-        backgroundColor: const Color(0xFF0A192F),
+        selectedItemColor: Theme.of(context).colorScheme.secondary,
+        unselectedItemColor: Theme.of(
+          context,
+        ).colorScheme.onBackground.withOpacity(0.5),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: "Map",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.route),
-            label: "Routes",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profile",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: "Map"),
+          BottomNavigationBarItem(icon: Icon(Icons.route), label: "Routes"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
     );

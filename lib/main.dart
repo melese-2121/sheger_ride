@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:sheger_ride/core/theme/dark_theme.dart';
-import 'package:sheger_ride/core/theme/light_theme.dart';
+import 'package:sheger_ride/core/theme/theme.dart';
+import 'package:sheger_ride/views/settings/settings_view.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sheger_ride/screens/splash_screen.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -22,29 +23,23 @@ Future<void> main() async {
     throw Exception('Supabase environment variables are missing!');
   }
 
-  await Supabase.initialize(
-    url: supabaseUrl,
-    anonKey: supabaseKey,
-  );
+  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
 
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Sheger Ride',
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.system, 
+      themeMode: themeMode,
       home: const SplashScreen(),
     );
   }

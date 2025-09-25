@@ -1,20 +1,21 @@
 import 'dart:ui';
-import 'package:flutter/material.dart';
 
-class SettingsView extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.system);
+
+class SettingsView extends ConsumerStatefulWidget {
   const SettingsView({super.key});
 
   @override
-  State<SettingsView> createState() => _SettingsViewState();
+  ConsumerState<SettingsView> createState() => _SettingsViewState();
 }
 
-class _SettingsViewState extends State<SettingsView> {
-  bool _darkMode = false;
+class _SettingsViewState extends ConsumerState<SettingsView> {
   bool _notifications = true;
-
   String _selectedLanguage = "English";
   bool _showLanguages = false;
-
   final List<Map<String, String>> _languages = [
     {"name": "English", "flag": "🇺🇸"},
     {"name": "Amharic", "flag": "🇪🇹"},
@@ -27,9 +28,11 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final themeMode = ref.watch(themeModeProvider);
+    final isDark = themeMode == ThemeMode.dark;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: colorScheme.background,
       body: Column(
         children: [
           // 🔥 Fixed Wavy Gradient Header
@@ -56,8 +59,9 @@ class _SettingsViewState extends State<SettingsView> {
                     children: [
                       const CircleAvatar(
                         radius: 45,
-                        backgroundImage:
-                            AssetImage("assets/profile_placeholder.png"),
+                        backgroundImage: AssetImage(
+                          "assets/profile_placeholder.png",
+                        ),
                       ),
                       const SizedBox(height: 12),
                       Text(
@@ -89,8 +93,12 @@ class _SettingsViewState extends State<SettingsView> {
               children: [
                 _buildSwitchTile(
                   title: "Dark Mode",
-                  value: _darkMode,
-                  onChanged: (val) => setState(() => _darkMode = val),
+                  value: isDark,
+                  onChanged: (val) {
+                    ref.read(themeModeProvider.notifier).state = val
+                        ? ThemeMode.dark
+                        : ThemeMode.light;
+                  },
                   icon: Icons.dark_mode,
                   color: Colors.indigo,
                 ),
@@ -146,7 +154,7 @@ class _SettingsViewState extends State<SettingsView> {
             color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 4),
-          )
+          ),
         ],
       ),
       child: SwitchListTile(
@@ -181,7 +189,7 @@ class _SettingsViewState extends State<SettingsView> {
               color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 4),
-            )
+            ),
           ],
         ),
         child: Row(
@@ -193,8 +201,10 @@ class _SettingsViewState extends State<SettingsView> {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: Text(title,
-                  style: const TextStyle(fontWeight: FontWeight.w600)),
+              child: Text(
+                title,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
             ),
             const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.grey),
           ],
@@ -248,8 +258,11 @@ class _SettingsViewState extends State<SettingsView> {
                     AnimatedRotation(
                       duration: const Duration(milliseconds: 250),
                       turns: _showLanguages ? 0.5 : 0,
-                      child: const Icon(Icons.keyboard_arrow_down_rounded,
-                          size: 28, color: Colors.grey),
+                      child: const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: 28,
+                        color: Colors.grey,
+                      ),
                     ),
                   ],
                 ),
@@ -272,7 +285,9 @@ class _SettingsViewState extends State<SettingsView> {
                             child: Container(
                               margin: const EdgeInsets.only(top: 10),
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 12),
+                                horizontal: 12,
+                                vertical: 12,
+                              ),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 color: isActive
@@ -287,18 +302,26 @@ class _SettingsViewState extends State<SettingsView> {
                               ),
                               child: Row(
                                 children: [
-                                  Text(lang["flag"] ?? "",
-                                      style: const TextStyle(fontSize: 20)),
+                                  Text(
+                                    lang["flag"] ?? "",
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
                                   const SizedBox(width: 12),
                                   Expanded(
-                                    child: Text(lang["name"]!,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 15)),
+                                    child: Text(
+                                      lang["name"]!,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15,
+                                      ),
+                                    ),
                                   ),
                                   if (isActive)
-                                    const Icon(Icons.check_circle,
-                                        color: Colors.blue, size: 20),
+                                    const Icon(
+                                      Icons.check_circle,
+                                      color: Colors.blue,
+                                      size: 20,
+                                    ),
                                 ],
                               ),
                             ),
@@ -324,13 +347,21 @@ class _WaveClipper extends CustomClipper<Path> {
 
     final firstControlPoint = Offset(size.width / 4, size.height);
     final firstEndPoint = Offset(size.width / 2, size.height - 40);
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
-        firstEndPoint.dx, firstEndPoint.dy);
+    path.quadraticBezierTo(
+      firstControlPoint.dx,
+      firstControlPoint.dy,
+      firstEndPoint.dx,
+      firstEndPoint.dy,
+    );
 
     final secondControlPoint = Offset(size.width * 3 / 4, size.height - 80);
     final secondEndPoint = Offset(size.width, size.height - 50);
-    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
-        secondEndPoint.dx, secondEndPoint.dy);
+    path.quadraticBezierTo(
+      secondControlPoint.dx,
+      secondControlPoint.dy,
+      secondEndPoint.dx,
+      secondEndPoint.dy,
+    );
 
     path.lineTo(size.width, 0);
     path.close();

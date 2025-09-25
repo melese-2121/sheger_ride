@@ -7,16 +7,18 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
     return Scaffold(
-      backgroundColor: const Color(0xFF001922),
+      backgroundColor: colorScheme.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF001922),
+        backgroundColor: colorScheme.background,
         elevation: 0,
-        title: const Text(
+        title: Text(
           "Sheger Ride",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+          style: textTheme.headlineMedium?.copyWith(
+            color: colorScheme.onBackground,
           ),
         ),
         actions: [
@@ -27,7 +29,7 @@ class HomeView extends StatelessWidget {
                 MaterialPageRoute(builder: (_) => const NotificationListView()),
               );
             },
-            icon: const Icon(Icons.notifications, color: Colors.white),
+            icon: Icon(Icons.notifications, color: colorScheme.onBackground),
           ),
         ],
       ),
@@ -36,20 +38,17 @@ class HomeView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               "Welcome back 👋",
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 16,
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onBackground.withOpacity(0.7),
               ),
             ),
             const SizedBox(height: 4),
-            const Text(
+            Text(
               "Where are you going?",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+              style: textTheme.headlineMedium?.copyWith(
+                color: colorScheme.onBackground,
               ),
             ),
             const SizedBox(height: 20),
@@ -58,22 +57,37 @@ class HomeView extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _quickAction(Icons.local_taxi, "Ride", Colors.amber),
-                _quickAction(Icons.map, "Map", Colors.blueAccent),
-                _quickAction(Icons.directions, "Route", Colors.green),
-                _quickAction(Icons.person, "Profile", Colors.purpleAccent),
+                _quickAction(
+                  context,
+                  Icons.local_taxi,
+                  "Ride",
+                  colorScheme.secondary,
+                ),
+                _quickAction(context, Icons.map, "Map", colorScheme.primary),
+                _quickAction(
+                  context,
+                  Icons.directions,
+                  "Route",
+                  colorScheme.tertiary,
+                ),
+                _quickAction(
+                  context,
+                  Icons.person,
+                  "Profile",
+                  colorScheme.error,
+                ),
               ],
             ),
 
             const SizedBox(height: 30),
 
             // Recent Ride Preview
-            const Text(
+            Text(
               "Recent Rides",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onBackground,
                 fontWeight: FontWeight.bold,
+                fontSize: 18,
               ),
             ),
             const SizedBox(height: 12),
@@ -87,7 +101,14 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _quickAction(IconData icon, String label, Color color) {
+  Widget _quickAction(
+    BuildContext context,
+    IconData icon,
+    String label,
+    Color color,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return Column(
       children: [
         Container(
@@ -101,13 +122,17 @@ class HomeView extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           label,
-          style: const TextStyle(color: Colors.white70),
+          style: textTheme.bodySmall?.copyWith(
+            color: colorScheme.onBackground.withOpacity(0.7),
+          ),
         ),
       ],
     );
   }
 
   Widget _rideCard(BuildContext context, String route, String details) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -121,7 +146,7 @@ class HomeView extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0xFF0A2E36),
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
@@ -129,10 +154,14 @@ class HomeView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.teal.withOpacity(0.2),
+                color: colorScheme.secondary.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.local_taxi, color: Colors.teal, size: 28),
+              child: Icon(
+                Icons.local_taxi,
+                color: colorScheme.secondary,
+                size: 28,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -141,8 +170,8 @@ class HomeView extends StatelessWidget {
                 children: [
                   Text(
                     route,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
@@ -150,12 +179,19 @@ class HomeView extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     details,
-                    style: const TextStyle(color: Colors.white70, fontSize: 14),
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurface.withOpacity(0.7),
+                      fontSize: 14,
+                    ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, color: Colors.white70, size: 16),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: colorScheme.onSurface.withOpacity(0.7),
+              size: 16,
+            ),
           ],
         ),
       ),
