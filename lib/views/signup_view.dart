@@ -39,15 +39,11 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF001922), Color(0xFF003344)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        color: colorScheme.background,
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -59,19 +55,19 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   child: Image.asset('assets/icons/app_icon.png', width: 140),
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   "Create Account 🚀",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
+                  style: textTheme.headlineMedium?.copyWith(
+                    color: colorScheme.onBackground,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 6),
-                const Text(
+                Text(
                   "Sign up to start your ride",
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onBackground.withOpacity(0.7),
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 30),
@@ -80,7 +76,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  color: Colors.white.withOpacity(0.1),
+                  color: colorScheme.surface.withOpacity(0.95),
                   elevation: 10,
                   child: Padding(
                     padding: const EdgeInsets.all(20),
@@ -90,6 +86,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                         children: [
                           // Name
                           _buildTextField(
+                            context: context,
                             controller: _nameController,
                             hint: 'Full Name',
                             icon: Icons.person,
@@ -101,6 +98,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
                           // Email
                           _buildTextField(
+                            context: context,
                             controller: _emailController,
                             hint: 'Email',
                             icon: Icons.email,
@@ -119,13 +117,13 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                           IntlPhoneField(
                             decoration: InputDecoration(
                               hintText: 'Phone Number',
-                              prefixIcon: const Icon(
+                              prefixIcon: Icon(
                                 Icons.phone,
-                                color: Colors.white70,
+                                color: colorScheme.onBackground.withOpacity(0.7),
                               ),
-                              hintStyle: const TextStyle(color: Colors.white54),
+                              hintStyle: textTheme.bodySmall?.copyWith(color: colorScheme.onBackground.withOpacity(0.5)),
                               filled: true,
-                              fillColor: Colors.white.withOpacity(0.05),
+                              fillColor: colorScheme.surface.withOpacity(0.7),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide.none,
@@ -136,10 +134,10 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                               ),
                             ),
                             initialCountryCode: 'ET',
-                            style: const TextStyle(color: Colors.white),
-                            dropdownIcon: const Icon(
+                            style: textTheme.bodyMedium?.copyWith(color: colorScheme.onBackground),
+                            dropdownIcon: Icon(
                               Icons.arrow_drop_down,
-                              color: Colors.white70,
+                              color: colorScheme.onBackground.withOpacity(0.7),
                             ),
                             onChanged: (phone) {
                               fullPhoneNumber = phone.completeNumber;
@@ -150,6 +148,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                           const SizedBox(height: 16),
 
                           _buildTextField(
+                            context: context,
                             controller: _passwordController,
                             hint: 'Password',
                             icon: Icons.lock,
@@ -159,7 +158,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                                 _obscurePassword
                                     ? Icons.visibility_off
                                     : Icons.visibility,
-                                color: Colors.white70,
+                                color: colorScheme.onBackground.withOpacity(0.7),
                               ),
                               onPressed: () {
                                 setState(
@@ -180,6 +179,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                           const SizedBox(height: 16),
 
                           _buildTextField(
+                            context: context,
                             controller: _confirmPasswordController,
                             hint: 'Confirm Password',
                             icon: Icons.lock_outline,
@@ -234,7 +234,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                                   children: [
                                     Text(
                                       e.toString(),
-                                      style: const TextStyle(color: Colors.red),
+                                      style: textTheme.bodySmall?.copyWith(color: colorScheme.error),
                                     ),
                                     SizedBox(
                                       width: double.infinity,
@@ -250,15 +250,11 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                                               14,
                                             ),
                                           ),
-                                          backgroundColor:
-                                              Colors.tealAccent[400],
-                                          foregroundColor: Colors.black,
+                                          backgroundColor: colorScheme.secondary,
+                                          foregroundColor: colorScheme.onSecondary,
                                           elevation: 5,
-                                          shadowColor: Colors.tealAccent[200],
-                                          textStyle: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          shadowColor: colorScheme.secondary.withOpacity(0.5),
+                                          textStyle: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                                         ),
                                         child: const Text("Sign Up"),
                                       ),
@@ -277,9 +273,12 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text(
+                  child: Text(
                     "Already have an account? Login",
-                    style: TextStyle(color: Colors.white70, fontSize: 15),
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onBackground.withOpacity(0.7),
+                      fontSize: 15,
+                    ),
                   ),
                 ),
               ],
@@ -291,6 +290,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   }
 
   Widget _buildTextField({
+    required BuildContext context,
     required TextEditingController controller,
     required String hint,
     required IconData icon,
@@ -298,16 +298,18 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     Widget? suffixIcon,
     String? Function(String?)? validator,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return TextFormField(
       controller: controller,
-      style: const TextStyle(color: Colors.white),
+      style: textTheme.bodyMedium?.copyWith(color: colorScheme.onBackground),
       obscureText: obscureText,
       decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Colors.white70),
+        prefixIcon: Icon(icon, color: colorScheme.onBackground.withOpacity(0.7)),
         filled: true,
-        fillColor: Colors.white.withOpacity(0.05),
+        fillColor: colorScheme.surface.withOpacity(0.7),
         hintText: hint,
-        hintStyle: const TextStyle(color: Colors.white54),
+        hintStyle: textTheme.bodySmall?.copyWith(color: colorScheme.onBackground.withOpacity(0.5)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,

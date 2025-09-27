@@ -55,15 +55,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       );
     });
 
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF001922), Color(0xFF003344)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        color: colorScheme.background,
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Form(
@@ -77,26 +73,28 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 ),
                 const SizedBox(height: 50),
 
-                const Text(
+                Text(
                   "Welcome Back 👋",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
+                  style: textTheme.headlineMedium?.copyWith(
+                    color: colorScheme.onBackground,
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   "Login to continue your ride",
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onBackground.withOpacity(0.7),
+                  ),
                 ),
                 const SizedBox(height: 40),
 
                 // Email input
                 TextFormField(
                   controller: _emailController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: _inputDecoration("Email", Icons.email),
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onBackground,
+                  ),
+                  decoration: _inputDecoration(context, "Email", Icons.email),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Please enter your email";
@@ -114,8 +112,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
-                  style: const TextStyle(color: Colors.white),
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onBackground,
+                  ),
                   decoration: _inputDecoration(
+                    context,
                     "Password",
                     Icons.lock,
                     suffix: IconButton(
@@ -123,7 +124,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         _obscurePassword
                             ? Icons.visibility_off
                             : Icons.visibility,
-                        color: Colors.white70,
+                        color: colorScheme.onBackground.withOpacity(0.7),
                       ),
                       onPressed: () =>
                           setState(() => _obscurePassword = !_obscurePassword),
@@ -156,9 +157,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       MaterialPageRoute(builder: (_) => const SignUpPage()),
                     );
                   },
-                  child: const Text(
+                  child: Text(
                     "Don’t have an account? Sign up",
-                    style: TextStyle(color: Colors.white70, fontSize: 15),
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onBackground.withOpacity(0.7),
+                      fontSize: 15,
+                    ),
                   ),
                 ),
               ],
@@ -170,17 +174,22 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   InputDecoration _inputDecoration(
+    BuildContext context,
     String hint,
     IconData icon, {
     Widget? suffix,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return InputDecoration(
-      prefixIcon: Icon(icon, color: Colors.white70),
+      prefixIcon: Icon(icon, color: colorScheme.onBackground.withOpacity(0.7)),
       suffixIcon: suffix,
       filled: true,
-      fillColor: Colors.white.withValues(alpha: 0.1),
+      fillColor: colorScheme.surface.withOpacity(0.9),
       hintText: hint,
-      hintStyle: const TextStyle(color: Colors.white54),
+      hintStyle: textTheme.bodySmall?.copyWith(
+        color: colorScheme.onBackground.withOpacity(0.5),
+      ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide.none,
